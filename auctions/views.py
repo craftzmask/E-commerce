@@ -87,3 +87,22 @@ def create_listing(request):
     return render(request, 'auctions/create_listing.html', {
         'form': ListingForm()
     })
+    
+    
+def view_listing(request, listing_id):
+    return render(request, 'auctions/view_listing.html', {
+        'listing': Listing.objects.get(pk=listing_id),
+        'form': PlaceBidForm()
+    })
+    
+
+# Watchlist
+def add_watchlist(request, listing_id):
+    listing = Listing.objects.get(pk=listing_id)
+    owner = request.user
+    watchlist = Watchlist.objects.filter(owner=owner, listing=listing)
+    if not watchlist.exists():
+        watchlist = Watchlist(owner=owner, listing=listing)
+        watchlist.save()
+    
+    return redirect('view_listing', listing_id=listing_id)

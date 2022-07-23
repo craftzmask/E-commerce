@@ -35,3 +35,8 @@ class Comment(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=100, blank=True, null=True)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='categories')
+    
+    
+class Watchlist(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="watchlist")
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)

@@ -1,0 +1,28 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+    <h2>Listing: {{ listing.title }}</h2>
+    {% if listing.photo %}
+        <img src="{{ listing.photo.url }}" width="200">
+    {% endif %}
+
+    <p>{{ listing.description }}</p>
+    <p>${{ listing.starting_bid }}</p>
+
+    <form action="" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="fieldWrapper form-group">
+                {{ field.errors }}
+                {{ field }}
+            </div>
+        {% endfor %}
+        <input type="submit" value="Place Bid">
+    </form>
+    <a href="{% url 'add_watchlist' listing.id %}">Add to Watchlist</a>
+
+    <h3>Details</h3>
+    <ul>
+        <li>Listed by: {{ user.username }}</li>
+    </ul>
+{% endblock %}

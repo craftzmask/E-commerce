@@ -120,4 +120,26 @@ def remove_watchlist(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     request.user.watchlist.filter(listing=listing).delete()
     
-    return redirect('view_listing', listing_id=listing_id) 
+    return redirect('view_listing', listing_id=listing_id)
+
+
+def place_bid(request, listing_id):
+    if request.method == 'POST':
+        form = PlaceBidForm(request.POST)
+        if form.is_valid():
+            bid_value = form.cleaned_data['value']
+            listing = Listing.objects.get(pk=listing_id)
+
+            # Find any bid that is greater than the placed bid
+            bids = listing.bids.filter(value__gt=bid_value)
+            if bids or bid_value < listing.starting_bid:
+                messages.error(request, f'The placed bid must be greater than current bid')
+            else:
+                Bid(value=bid_value, owner=request.user, listing=listing).save()
+                listing.starting_bid = bid_value
+                listing.save()
+                messages.success(request, f'Placed bid successfully')
+                
+        return redirect('view_listing', listing_id=listing_id)
+            
+    

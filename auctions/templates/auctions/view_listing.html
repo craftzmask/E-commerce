@@ -9,7 +9,7 @@
     <p>{{ listing.description }}</p>
     <p>${{ listing.starting_bid }}</p>
 
-    <form action="" method="post">
+    <form action="{% url 'place_bid' listing.id %}" method="post">
         {% csrf_token %}
         {% for field in form %}
             <div class="fieldWrapper form-group">
@@ -24,6 +24,7 @@
     {% else %}
         <a href="{% url 'add_watchlist' listing.id %}">Add to Watchlist</a>
     {% endif %}
+
     <h3>Details</h3>
     <ul>
         <li>Listed by: {{ user.username }}</li>

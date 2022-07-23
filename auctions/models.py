@@ -12,7 +12,6 @@ class Listing(models.Model):
     starting_bid = models.DecimalField(max_digits=19, decimal_places=2)
     photo = models.ImageField(
         upload_to='images/listing-photos',
-        height_field=200, width_field=200,
         blank=True, null=True
     )
     created_at = models.TimeField(auto_now_add=True)

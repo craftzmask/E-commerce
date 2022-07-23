@@ -1,16 +1,19 @@
+from unicodedata import category
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.contrib import messages
 
-from .models import User
-
+from .models import *
+from .forms import *
 
 def index(request):
     return render(request, "auctions/index.html")
 
 
+# Users
 def login_view(request):
     if request.method == "POST":
 
@@ -61,3 +64,24 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+
+# Listings
+def create_listing(request):
+    if request.method == 'POST':
+        
+        form = ListingForm(request.POST, request.FILES)
+        if form.is_valid():
+            listing = form.save(commit=False)
+            listing.owner = request.user
+            listing.save()       
+            messages.success(request, f'{listing.title} added to active listings')
+            return redirect('index')
+        else:
+            return render(request, 'auctions/create_listing.html', {
+                'form': form
+            })
+    
+    return render(request, 'auctions/create_listing.html', {
+        'form': ListingForm()
+    })

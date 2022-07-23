@@ -22,6 +22,9 @@
             </li>
             {% if user.is_authenticated %}
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'create_listing' %}">Create Listing</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
                 </li>
             {% else %}
@@ -34,6 +37,15 @@
             {% endif %}
         </ul>
         <hr>
+        {% if messages %}
+            <ul class="messages list-unstyled">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %} role="alert">
+                    {{ message }}
+                </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         {% block body %}
         {% endblock %}
     </body>

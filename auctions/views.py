@@ -90,8 +90,16 @@ def create_listing(request):
     
     
 def view_listing(request, listing_id):
+    listing = Listing.objects.get(pk=listing_id)
+    user_listing = None
+    user_watchlist = request.user.watchlist.filter(listing=listing).first()
+    
+    if user_watchlist:
+        user_listing = user_watchlist.listing
+          
     return render(request, 'auctions/view_listing.html', {
         'listing': Listing.objects.get(pk=listing_id),
+        'user_listing': user_listing,
         'form': PlaceBidForm()
     })
     

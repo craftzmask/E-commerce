@@ -19,8 +19,11 @@
         {% endfor %}
         <input type="submit" value="Place Bid">
     </form>
-    <a href="{% url 'add_watchlist' listing.id %}">Add to Watchlist</a>
-
+    {% if user_listing == listing %}
+        <a href="{% url 'add_watchlist' listing.id %}">Remove from Watchlist</a>
+    {% else %}
+        <a href="{% url 'add_watchlist' listing.id %}">Add to Watchlist</a>
+    {% endif %}
     <h3>Details</h3>
     <ul>
         <li>Listed by: {{ user.username }}</li>

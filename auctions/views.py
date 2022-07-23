@@ -10,7 +10,9 @@ from .models import *
 from .forms import *
 
 def index(request):
-    return render(request, "auctions/index.html")
+    return render(request, "auctions/index.html", {
+        'listings': Listing.objects.all()
+    })
 
 
 # Users

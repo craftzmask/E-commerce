@@ -14,18 +14,20 @@ class Listing(models.Model):
         upload_to='images/listing-photos',
         blank=True, null=True
     )
-    created_at = models.TimeField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='listings')
 
 
 class Bid(models.Model):
     value = models.DecimalField(max_digits=19, decimal_places=2)
+    created_at = models.DateField(auto_now_add=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='bids')
 
 
 class Comment(models.Model):
     content = models.TextField()
+    created_at = models.DateField(auto_now_add=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='comments')
 

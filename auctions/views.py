@@ -130,6 +130,14 @@ def add_watchlist(request, listing_id):
     return redirect('view_listing', listing_id=listing_id)
 
 
+def view_watchlist(request):
+    watchlist = request.user.watchlist.all()
+    listings = [w.listing for w in watchlist]
+    return render(request, 'auctions/view_watchlist.html', {
+        'listings': listings
+    })
+
+
 def remove_watchlist(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     request.user.watchlist.filter(listing=listing).delete()

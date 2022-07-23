@@ -1,7 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2>Watchlist</h2>
 
     {% for listing in listings %}
         <a href="{% url 'view_listing' listing.id %}">
@@ -23,6 +23,6 @@
             </div>
         </a>
     {% empty %}
-        <p>No Active Listings yet</p>
+        <p>No Watchlist</p>
     {% endfor %}
 {% endblock %}

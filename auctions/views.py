@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 from .models import *
 from .forms import *
@@ -18,7 +19,7 @@ def index(request):
 # Users
 def login_view(request):
     if request.method == "POST":
-
+        
         # Attempt to sign user in
         username = request.POST["username"]
         password = request.POST["password"]
@@ -36,6 +37,7 @@ def login_view(request):
         return render(request, "auctions/login.html")
 
 
+@login_required
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
@@ -69,6 +71,7 @@ def register(request):
 
 
 # Listings
+@login_required
 def create_listing(request):
     if request.method == 'POST':
         
@@ -91,9 +94,13 @@ def create_listing(request):
     
 def view_listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
-    user_listing = request.user.listings.filter(id=listing_id).first()
-    user_watchlist = request.user.watchlist.filter(listing=listing).first()
+    user_listing = None
+    user_watchlist = None
     highest_bid = None
+    
+    if request.user.is_authenticated:
+        user_listing = request.user.listings.filter(id=listing_id).first()
+        user_watchlist = request.user.watchlist.filter(listing=listing).first()
     
     if user_watchlist:
         user_watchlist = user_watchlist.listing
@@ -111,14 +118,17 @@ def view_listing(request, listing_id):
         'comment_form': AddCommentForm()
     })
     
-    
+
+@login_required    
 def close_listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     listing.is_active = False
     listing.save()
     return redirect('view_listing', listing_id=listing_id)
 
+
 # Watchlist
+@login_required
 def add_watchlist(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     owner = request.user
@@ -130,6 +140,7 @@ def add_watchlist(request, listing_id):
     return redirect('view_listing', listing_id=listing_id)
 
 
+@login_required
 def view_watchlist(request):
     watchlist = request.user.watchlist.all()
     listings = [w.listing for w in watchlist]
@@ -138,6 +149,7 @@ def view_watchlist(request):
     })
 
 
+@login_required
 def remove_watchlist(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     request.user.watchlist.filter(listing=listing).delete()
@@ -145,6 +157,7 @@ def remove_watchlist(request, listing_id):
     return redirect('view_listing', listing_id=listing_id)
 
 
+@login_required
 def place_bid(request, listing_id):
     if request.method == 'POST':
         form = PlaceBidForm(request.POST)
@@ -165,6 +178,7 @@ def place_bid(request, listing_id):
         return redirect('view_listing', listing_id=listing_id)
             
     
+@login_required
 def add_comment(request, listing_id):
     if request.method == 'POST':
         form = AddCommentForm(request.POST)

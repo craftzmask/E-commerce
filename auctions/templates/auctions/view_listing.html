@@ -20,7 +20,7 @@
             {% endfor %}
             <input type="submit" value="Place Bid">
         </form>
-
+        
         {% if user_watchlist == listing %}
             <a href="{% url 'remove_watchlist' listing.id %}">Remove from Watchlist</a>
         {% else %}
@@ -28,9 +28,7 @@
         {% endif %}
 
         {% if user_listing %}
-            <div>
-                <a href="{% url 'close_listing' listing.id %}">Close</a>
-            </div>
+            <div><a href="{% url 'close_listing' listing.id %}">Close</a></div>
         {% endif %}
 
     {% else %}
@@ -39,22 +37,23 @@
 
     <h3>Details</h3>
     <ul>
-        <li>Listed by: {{ user.username }}</li>
+        <li>Listed by: {{ listing.owner.username }}</li>
     </ul>
 
-    <form action="{% url 'add_comment' listing.id %}" method="post">
-        {% csrf_token %}
-        {% for field in comment_form %}
-            <div class="fieldWrapper form-group">
-                {{ field.errors }}
-                {{ field }}
-            </div>
-        {% endfor %}
-        <input type="submit" value="Comment">
-    </form>
+    {% if listing.is_active and user.is_authenticated %}
+        <form action="{% url 'add_comment' listing.id %}" method="post">
+            {% csrf_token %}
+            {% for field in comment_form %}
+                <div class="fieldWrapper form-group">
+                    {{ field.errors }}
+                    {{ field }}
+                </div>
+            {% endfor %}
+            <input type="submit" value="Comment">
+        </form>
+    {% endif %}
 
     <h3>Comments</h3>
-
     {% for comment in listing.comments.all %}
         <div class="card">
             <div class="card-header">

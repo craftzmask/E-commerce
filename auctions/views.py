@@ -114,3 +114,10 @@ def add_watchlist(request, listing_id):
         watchlist.save()
     
     return redirect('view_listing', listing_id=listing_id)
+
+
+def remove_watchlist(request, listing_id):
+    listing = Listing.objects.get(pk=listing_id)
+    request.user.watchlist.filter(listing=listing).delete()
+    
+    return redirect('view_listing', listing_id=listing_id) 

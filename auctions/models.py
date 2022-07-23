@@ -10,6 +10,7 @@ class Listing(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     starting_bid = models.DecimalField(max_digits=19, decimal_places=2)
+    is_active = models.BooleanField(default=True)
     photo = models.ImageField(
         upload_to='images/listing-photos',
         blank=True, null=True

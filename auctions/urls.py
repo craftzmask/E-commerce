@@ -12,8 +12,9 @@ urlpatterns = [
     path('watchlist/add/<int:listing_id>', views.add_watchlist, name='add_watchlist'),
     path('watchlist/remove/<int:listing_id>', views.remove_watchlist, name='remove_watchlist'),
     path('listings/create', views.create_listing, name='create_listing'),
-    path('listings/<int:listing_id>', views.view_listing, name='view_listing'),
-    path('listing/place-bid/<int:listing_id>', views.place_bid, name='place_bid')
+    path('listings/view/<int:listing_id>', views.view_listing, name='view_listing'),
+    path('listings/close/<int:listing_id>', views.close_listing, name='close_listing'),
+    path('listings/place-bid/<int:listing_id>', views.place_bid, name='place_bid')
 ]
 
 if settings.DEBUG:

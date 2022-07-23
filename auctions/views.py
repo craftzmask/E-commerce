@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.contrib import messages
+from django.db.models import Max
 
 from .models import *
 from .forms import *
@@ -91,18 +92,31 @@ def create_listing(request):
     
 def view_listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
-    user_listing = None
+    user_listing = request.user.listings.filter(id=listing_id).first()
     user_watchlist = request.user.watchlist.filter(listing=listing).first()
+    highest_bid = None
     
     if user_watchlist:
-        user_listing = user_watchlist.listing
-          
+        user_watchlist = user_watchlist.listing
+    
+    if not listing.is_active:
+        highest_bid = listing.bids.latest('created_at')
+        if highest_bid.owner.username == request.user.username:
+            messages.info(request, 'You are the winner of this auction')
+        
     return render(request, 'auctions/view_listing.html', {
         'listing': Listing.objects.get(pk=listing_id),
+        'user_watchlist': user_watchlist,
         'user_listing': user_listing,
         'form': PlaceBidForm()
     })
     
+    
+def close_listing(request, listing_id):
+    listing = Listing.objects.get(pk=listing_id)
+    listing.is_active = False
+    listing.save()
+    return redirect('view_listing', listing_id=listing_id)
 
 # Watchlist
 def add_watchlist(request, listing_id):
@@ -131,7 +145,7 @@ def place_bid(request, listing_id):
             listing = Listing.objects.get(pk=listing_id)
 
             # Find any bid that is greater than the placed bid
-            bids = listing.bids.filter(value__gt=bid_value)
+            bids = listing.bids.filter(value__gte=bid_value)
             if bids or bid_value < listing.starting_bid:
                 messages.error(request, f'The placed bid must be greater than current bid')
             else:

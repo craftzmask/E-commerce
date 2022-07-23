@@ -9,20 +9,32 @@
     <p>{{ listing.description }}</p>
     <p>${{ listing.starting_bid }}</p>
 
-    <form action="{% url 'place_bid' listing.id %}" method="post">
-        {% csrf_token %}
-        {% for field in form %}
-            <div class="fieldWrapper form-group">
-                {{ field.errors }}
-                {{ field }}
+    {% if listing.is_active %}
+        <form action="{% url 'place_bid' listing.id %}" method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="fieldWrapper form-group">
+                    {{ field.errors }}
+                    {{ field }}
+                </div>
+            {% endfor %}
+            <input type="submit" value="Place Bid">
+        </form>
+
+        {% if user_watchlist == listing %}
+            <a href="{% url 'remove_watchlist' listing.id %}">Remove from Watchlist</a>
+        {% else %}
+            <a href="{% url 'add_watchlist' listing.id %}">Add to Watchlist</a>
+        {% endif %}
+
+        {% if user_listing %}
+            <div>
+                <a href="{% url 'close_listing' listing.id %}">Close</a>
             </div>
-        {% endfor %}
-        <input type="submit" value="Place Bid">
-    </form>
-    {% if user_listing == listing %}
-        <a href="{% url 'remove_watchlist' listing.id %}">Remove from Watchlist</a>
+        {% endif %}
+
     {% else %}
-        <a href="{% url 'add_watchlist' listing.id %}">Add to Watchlist</a>
+        <p>The auction is closed</p>
     {% endif %}
 
     <h3>Details</h3>

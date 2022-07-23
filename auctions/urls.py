@@ -14,7 +14,8 @@ urlpatterns = [
     path('listings/create', views.create_listing, name='create_listing'),
     path('listings/view/<int:listing_id>', views.view_listing, name='view_listing'),
     path('listings/close/<int:listing_id>', views.close_listing, name='close_listing'),
-    path('listings/place-bid/<int:listing_id>', views.place_bid, name='place_bid')
+    path('listings/place-bid/<int:listing_id>', views.place_bid, name='place_bid'),
+    path('comments/add/<int:listing_id>', views.add_comment, name='add_comment')
 ]
 
 if settings.DEBUG:

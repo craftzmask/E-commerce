@@ -12,7 +12,7 @@
     {% if listing.is_active %}
         <form action="{% url 'place_bid' listing.id %}" method="post">
             {% csrf_token %}
-            {% for field in form %}
+            {% for field in place_bid_form %}
                 <div class="fieldWrapper form-group">
                     {{ field.errors }}
                     {{ field }}
@@ -41,4 +41,28 @@
     <ul>
         <li>Listed by: {{ user.username }}</li>
     </ul>
+
+    <form action="{% url 'add_comment' listing.id %}" method="post">
+        {% csrf_token %}
+        {% for field in comment_form %}
+            <div class="fieldWrapper form-group">
+                {{ field.errors }}
+                {{ field }}
+            </div>
+        {% endfor %}
+        <input type="submit" value="Comment">
+    </form>
+
+    <h3>Comments</h3>
+
+    {% for comment in listing.comments.all %}
+        <div class="card">
+            <div class="card-header">
+            Commented at {{ comment.created_at }} by {{ comment.owner.username }}
+            </div>
+            <div class="card-body">
+            <p class="card-text">{{ comment.content }}</p>
+            </div>
+        </div>
+    {% endfor %}
 {% endblock %}

@@ -5,7 +5,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.contrib import messages
-from django.db.models import Max
 
 from .models import *
 from .forms import *
@@ -108,7 +107,8 @@ def view_listing(request, listing_id):
         'listing': Listing.objects.get(pk=listing_id),
         'user_watchlist': user_watchlist,
         'user_listing': user_listing,
-        'form': PlaceBidForm()
+        'place_bid_form': PlaceBidForm(),
+        'comment_form': AddCommentForm()
     })
     
     
@@ -157,3 +157,17 @@ def place_bid(request, listing_id):
         return redirect('view_listing', listing_id=listing_id)
             
     
+def add_comment(request, listing_id):
+    if request.method == 'POST':
+        form = AddCommentForm(request.POST)
+        if form.is_valid():
+            content = form.cleaned_data['content']
+            listing = Listing.objects.get(pk=listing_id)
+            Comment(content=content, owner=request.user, listing=listing).save()
+        else:
+            return render(request, 'auctions/view_listing.html', {
+                form: AddCommentForm()
+            })
+            
+        return redirect('view_listing', listing_id=listing_id)
+        

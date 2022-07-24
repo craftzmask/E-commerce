@@ -2,27 +2,5 @@
 
 {% block body %}
     <h2>Active Listings</h2>
-
-    {% for listing in listings %}
-        <a href="{% url 'view_listing' listing.id %}">
-            <div class="card mb-3" style="max-width: 540px;">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        {% if listing.photo %}
-                            <img src="{{ listing.photo.url }}" class="img-fluid rounded-start" alt="listing.title">
-                        {% endif %}
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ listing.title }}</h5>
-                            <p class="card-text">Price: ${{ listing.starting_bid }}</p>
-                            <p class="card-text"><small class="text-muted">Created {{ listing.created_at }}</small></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
-    {% empty %}
-        <p>No Active Listings yet</p>
-    {% endfor %}
+    {% include 'auctions/snippets/display-items.html' with listings=listings %}
 {% endblock %}

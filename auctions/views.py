@@ -1,10 +1,9 @@
 from django.contrib.auth import authenticate, login, logout
-from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import redirect, render
-from django.urls import reverse
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.db import IntegrityError
+from django.shortcuts import redirect, render
+
 
 from .models import *
 from .forms import *
@@ -34,8 +33,14 @@ def login_view(request):
             else:
                 messages.error(request, 'Invalid username and/or password')
                 return redirect('login')
+        else:
+            return render(request, 'auctions/users/login.html', {
+                'form': form
+            })
     else:
-        return render(request, 'auctions/users/login.html', {'form': LoginForm()})
+        return render(request, 'auctions/users/login.html', {
+            'form': LoginForm()
+        })
 
 
 @login_required
@@ -69,6 +74,10 @@ def register(request):
             
             login(request, user)
             return redirect('index')
+        else:
+            return render(request, 'auctions/users/register.html', {
+                'form': form
+            })
     else:
         return render(request, 'auctions/users/register.html', {
             'form': RegisterForm()
@@ -110,7 +119,11 @@ def view_listings_category(request, category_id):
         'listings': listings
     })
         
-def view_listing(request, listing_id):
+def view_listing(request, 
+                 listing_id, 
+                 place_bid_form=PlaceBidForm(), 
+                 comment_form=AddCommentForm()):
+    
     listing = Listing.objects.get(pk=listing_id)
     user_listing = None
     user_watchlist = None
@@ -132,8 +145,8 @@ def view_listing(request, listing_id):
         'listing': Listing.objects.get(pk=listing_id),
         'user_watchlist': user_watchlist,
         'user_listing': user_listing,
-        'place_bid_form': PlaceBidForm(),
-        'comment_form': AddCommentForm()
+        'form': place_bid_form,
+        'form_1': comment_form
     })
     
 
@@ -178,6 +191,7 @@ def remove_watchlist(request, listing_id):
 @login_required
 def place_bid(request, listing_id):
     if request.method == 'POST':
+        
         form = PlaceBidForm(request.POST)
         if form.is_valid():
             bid_value = form.cleaned_data['value']
@@ -192,8 +206,10 @@ def place_bid(request, listing_id):
                 listing.starting_bid = bid_value
                 listing.save()
                 messages.success(request, f'Placed bid successfully')
-                
-        return redirect('view_listing', listing_id=listing_id)
+            
+            return redirect('view_listing', listing_id=listing_id)
+        else:
+            return redirect('view_listing', listing_id=listing_id, place_bid_form=form)
             
     
 @login_required
@@ -205,9 +221,7 @@ def add_comment(request, listing_id):
             listing = Listing.objects.get(pk=listing_id)
             Comment(content=content, owner=request.user, listing=listing).save()
         else:
-            return render(request, 'auctions/view_listing.html', {
-                form: AddCommentForm()
-            })
+            return redirect('view_listing', listing_id=listing_id, comment_form=form)
             
         return redirect('view_listing', listing_id=listing_id)
         

@@ -5,7 +5,9 @@
     <h2>Register</h2>
 
     <form action="{% url 'register' %}" method="post">
-        {% include 'auctions/snippets/form.html' with button_tag="Register" %}
+        {% csrf_token %}        
+        {{ form }}
+        <input type="submit" value="Register">
     </form>
 
     Already have an account? <a href="{% url 'login' %}">Log In here.</a>

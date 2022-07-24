@@ -104,26 +104,13 @@ def create_listing(request):
     return render(request, 'auctions/listings/create.html', {
         'form': ListingForm()
     })
-    
-
-def view_categories(request):
-    return render(request, 'auctions/categories/view.html', {
-        'categories': Category.objects.all()
-    })
-    
-def view_listings_category(request, category_id):
-    category = Category.objects.get(pk=category_id)
-    listings = Listing.objects.filter(category=category)
-    return render(request, 'auctions/categories/view_listings.html', {
-        'category': category,
-        'listings': listings
-    })
-        
-def view_listing(request, listing_id, place_bid_form=PlaceBidForm(), comment_form=AddCommentForm()):
+ 
+ 
+ def view_listing(request, listing_id, place_bid_form=PlaceBidForm(), comment_form=AddCommentForm()):
     listing = Listing.objects.get(pk=listing_id)
     user = request.user
     
-    if user.is_authenticated: # logic here
+    if user.is_authenticated:
         if not listing.is_active and listing.bids.last().owner == user:
             messages.info(request, 'You are the winner of this auction')
             
@@ -139,6 +126,20 @@ def view_listing(request, listing_id, place_bid_form=PlaceBidForm(), comment_for
         'listing': listing,
         'form': place_bid_form,
         'form_1': comment_form
+    })
+       
+
+def view_categories(request):
+    return render(request, 'auctions/categories/view.html', {
+        'categories': Category.objects.all()
+    })
+    
+def view_listings_category(request, category_id):
+    category = Category.objects.get(pk=category_id)
+    listings = Listing.objects.filter(category=category)
+    return render(request, 'auctions/categories/view_listings.html', {
+        'category': category,
+        'listings': listings
     })
     
 

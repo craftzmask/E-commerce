@@ -1,4 +1,3 @@
-from unicodedata import category
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -91,7 +90,20 @@ def create_listing(request):
         'form': ListingForm()
     })
     
+
+def view_categories(request):
+    return render(request, 'auctions/view_categories.html', {
+        'categories': Category.objects.all()
+    })
     
+def view_listings_category(request, category_id):
+    category = Category.objects.get(pk=category_id)
+    listings = Listing.objects.filter(category=category)
+    return render(request, 'auctions/view_listings_category.html', {
+        'category': category,
+        'listings': listings
+    })
+        
 def view_listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     user_listing = None

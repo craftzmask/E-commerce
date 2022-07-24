@@ -6,6 +6,10 @@ class User(AbstractUser):
     pass
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=100, blank=True, null=True)
+    
+
 class Listing(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
@@ -15,6 +19,7 @@ class Listing(models.Model):
         upload_to='images/listing-photos',
         blank=True, null=True
     )
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='listings', blank=True, null=True)
     created_at = models.DateField(auto_now_add=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='listings')
 
@@ -31,11 +36,6 @@ class Comment(models.Model):
     created_at = models.DateField(auto_now_add=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='comments')
-
-
-class Category(models.Model):
-    name = models.CharField(max_length=100, blank=True, null=True)
-    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='categories')
     
     
 class Watchlist(models.Model):

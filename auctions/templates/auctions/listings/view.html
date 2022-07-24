@@ -16,7 +16,7 @@
             <input type="submit" value="Place Bid">
         </form>
         
-        {% if user_watchlist == listing %}
+        {% if user_watchlist %}
             <a href="{% url 'remove_watchlist' listing.id %}">Remove from Watchlist</a>
         {% else %}
             <a href="{% url 'add_watchlist' listing.id %}">Add to Watchlist</a>

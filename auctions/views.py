@@ -119,32 +119,25 @@ def view_listings_category(request, category_id):
         'listings': listings
     })
         
-def view_listing(request, 
-                 listing_id, 
-                 place_bid_form=PlaceBidForm(), 
-                 comment_form=AddCommentForm()):
-    
+def view_listing(request, listing_id, place_bid_form=PlaceBidForm(), comment_form=AddCommentForm()):
     listing = Listing.objects.get(pk=listing_id)
-    user_listing = None
-    user_watchlist = None
-    highest_bid = None
+    user = request.user
     
-    if request.user.is_authenticated:
-        user_listing = request.user.listings.filter(id=listing_id).first()
-        user_watchlist = request.user.watchlist.filter(listing=listing).first()
+    if user.is_authenticated:
+        if not listing.is_active:
+            if listing.bids.last().owner == user:
+                messages.info(request, 'You are the winner of this auction')
+            
+        return render(request, 'auctions/listings/view.html', {
+            'listing': listing,
+            'user_watchlist': user.watchlist.filter(listing=listing).exists(),
+            'user_listing': user.listings.contains(listing),
+            'form': place_bid_form,
+            'form_1': comment_form
+        })
     
-    if user_watchlist:
-        user_watchlist = user_watchlist.listing
-    
-    if not listing.is_active:
-        highest_bid = listing.bids.latest('created_at')
-        if highest_bid.owner.username == request.user.username:
-            messages.info(request, 'You are the winner of this auction')
-        
     return render(request, 'auctions/listings/view.html', {
-        'listing': Listing.objects.get(pk=listing_id),
-        'user_watchlist': user_watchlist,
-        'user_listing': user_listing,
+        'listing': listing,
         'form': place_bid_form,
         'form_1': comment_form
     })
@@ -163,11 +156,7 @@ def close_listing(request, listing_id):
 def add_watchlist(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     owner = request.user
-    watchlist = Watchlist.objects.filter(owner=owner, listing=listing)
-    if not watchlist.exists():
-        watchlist = Watchlist(owner=owner, listing=listing)
-        watchlist.save()
-    
+    Watchlist.objects.get_or_create(owner=owner, listing=listing)
     return redirect('view_listing', listing_id=listing_id)
 
 

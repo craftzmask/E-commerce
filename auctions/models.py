@@ -5,6 +5,8 @@ from django.db import models
 class User(AbstractUser):
     pass
 
+    def __str__(self):
+        return f'{self.username}'
 
 class Category(models.Model):
     name = models.CharField(max_length=100, blank=True, null=True)
@@ -25,6 +27,8 @@ class Listing(models.Model):
     created_at = models.DateField(auto_now_add=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='listings')
 
+    def __str__(self):
+        return f'{self.title}'
 
 class Bid(models.Model):
     value = models.DecimalField(max_digits=19, decimal_places=2)

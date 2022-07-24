@@ -16,13 +16,13 @@
             <input type="submit" value="Place Bid">
         </form>
         
-        {% if user_watchlist %}
+        {% if user_watchlist_exits %}
             <a href="{% url 'remove_watchlist' listing.id %}">Remove from Watchlist</a>
         {% else %}
             <a href="{% url 'add_watchlist' listing.id %}">Add to Watchlist</a>
         {% endif %}
 
-        {% if user_listing %}
+        {% if user_listing_contains %}
             <div><a href="{% url 'close_listing' listing.id %}">Close</a></div>
         {% endif %}
 

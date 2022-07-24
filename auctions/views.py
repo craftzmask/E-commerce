@@ -123,15 +123,14 @@ def view_listing(request, listing_id, place_bid_form=PlaceBidForm(), comment_for
     listing = Listing.objects.get(pk=listing_id)
     user = request.user
     
-    if user.is_authenticated:
-        if not listing.is_active:
-            if listing.bids.last().owner == user:
-                messages.info(request, 'You are the winner of this auction')
+    if user.is_authenticated: # logic here
+        if not listing.is_active and listing.bids.last().owner == user:
+            messages.info(request, 'You are the winner of this auction')
             
         return render(request, 'auctions/listings/view.html', {
             'listing': listing,
-            'user_watchlist': user.watchlist.filter(listing=listing).exists(),
-            'user_listing': user.listings.contains(listing),
+            'user_watchlist_exits': user.watchlist.filter(listing=listing).exists(),
+            'user_listing_contains': user.listings.contains(listing),
             'form': place_bid_form,
             'form_1': comment_form
         })

@@ -106,10 +106,10 @@ def create_listing(request):
     })
  
  
- def view_listing(request, listing_id, place_bid_form=PlaceBidForm(), comment_form=AddCommentForm()):
+def view_listing(request, listing_id, place_bid_form=PlaceBidForm(), comment_form=AddCommentForm()):
     listing = Listing.objects.get(pk=listing_id)
     user = request.user
-    
+
     if user.is_authenticated:
         if not listing.is_active and listing.bids.last().owner == user:
             messages.info(request, 'You are the winner of this auction')
@@ -121,7 +121,7 @@ def create_listing(request):
             'form': place_bid_form,
             'form_1': comment_form
         })
-    
+
     return render(request, 'auctions/listings/view.html', {
         'listing': listing,
         'form': place_bid_form,

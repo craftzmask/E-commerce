@@ -17,56 +17,58 @@ def index(request):
 
 # Users
 def login_view(request):
-    if request.method == "POST":
+    if request.method == 'POST':
         
-        # Attempt to sign user in
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            # Authenticate user
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
 
-        # Check if authentication successful
-        if user is not None:
-            login(request, user)
-            return HttpResponseRedirect(reverse('index'))
-        else:
-            return render(request, 'auctions/users/login.html', {
-                'message': 'Invalid username and/or password.'
-            })
+            # Ensure user exists
+            if user is not None:
+                login(request, user)
+                messages.success(request, 'Welcome back! You successfully logged in')
+                return redirect('index')
+            else:
+                messages.error(request, 'Invalid username and/or password')
+                return redirect('login')
     else:
-        return render(request, 'auctions/users/login.html', {
-            'form': LoginForm()
-        })
+        return render(request, 'auctions/users/login.html', {'form': LoginForm()})
 
 
 @login_required
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse('index'))
+    return redirect('index')
 
 
 def register(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        email = request.POST['email']
+        
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
 
-        # Ensure password matches confirmation
-        password = request.POST['password']
-        confirmation = request.POST['confirmation']
-        if password != confirmation:
-            return render(request, 'auctions/users/register.html', {
-                'message': 'Passwords must match.'
-            })
+            # Ensure password matches confirmation
+            password = form.cleaned_data['password']
+            confirmation = form.cleaned_data['confirmation']
+            if password != confirmation:
+                messages.error(request, 'Passwords must match')
+                return redirect('register')
 
-        # Attempt to create new user
-        try:
-            user = User.objects.create_user(username, email, password)
-            user.save()
-        except IntegrityError:
-            return render(request, 'auctions/users/register.html', {
-                'message': 'Username already taken.'
-            })
-        login(request, user)
-        return HttpResponseRedirect(reverse('index'))
+            # Attempt to create new user
+            try:
+                user = User.objects.create_user(username, email, password)
+                user.save()
+            except IntegrityError:
+                messages.error(request, 'Username already taken')
+                return redirect('register')
+            
+            login(request, user)
+            return redirect('index')
     else:
         return render(request, 'auctions/users/register.html', {
             'form': RegisterForm()

@@ -3,19 +3,17 @@ from django.forms import ModelForm, Select
 from .models import Bid, Category, Listing, Comment, User
 
 
-class LoginForm(ModelForm):
+class LoginForm(forms.Form):
+    template_name = 'auctions/form_snippet.html'
+    username = forms.CharField(max_length=100)
     password = forms.CharField(widget=forms.PasswordInput())
-    class Meta:
-        model = User
-        fields = ['username']
 
 
-class RegisterForm(ModelForm):
+class RegisterForm(forms.Form):
+    username = forms.CharField()
+    email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput())
     confirmation = forms.CharField(widget=forms.PasswordInput())
-    class Meta:
-        model = User
-        fields = ['username', 'email']
 
 
 class ListingForm(ModelForm):

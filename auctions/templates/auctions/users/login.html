@@ -4,12 +4,8 @@
 
     <h2>Login</h2>
 
-    {% if message %}
-        <div>{{ message }}</div>
-    {% endif %}
-
     <form action="{% url 'login' %}" method="post">
-        {% include 'auctions/form.html' with button_tag="Login" %}
+        {% include 'auctions/snippets/form.html' with button_tag="Login" %}
     </form>
 
     Don't have an account? <a href="{% url 'register' %}">Register here.</a>

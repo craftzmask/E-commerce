@@ -11,7 +11,7 @@
 
     {% if listing.is_active %}
         <form action="{% url 'place_bid' listing.id %}" method="post">
-            {% include 'auctions/form.html' with button_tag="Place Bid" %}
+            {% include 'auctions/snippets/form.html' with button_tag="Place Bid" %}
         </form>
         
         {% if user_watchlist == listing %}
@@ -35,7 +35,7 @@
 
     {% if listing.is_active and user.is_authenticated %}
         <form action="{% url 'add_comment' listing.id %}" method="post">
-            {% include 'auctions/form.html' with button_tag="Comment" %}
+            {% include 'auctions/snippets/form.html' with button_tag="Comment" %}
         </form>
     {% endif %}
 

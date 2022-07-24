@@ -1,12 +1,13 @@
-from django.forms import ModelForm
-from .models import Bid, Listing, Comment
+from django import forms
+from django.forms import ModelForm, Select
+from .models import Bid, Category, Listing, Comment
 
 class ListingForm(ModelForm):
+    category = forms.ModelChoiceField(queryset=Category.objects.all())
     class Meta:
         model = Listing
-        fields = ['title', 'description', 'starting_bid', 'photo']
-
-
+        fields = ['title', 'description', 'starting_bid', 'photo', 'category']
+    
 class PlaceBidForm(ModelForm):
     class Meta:
         model = Bid

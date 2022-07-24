@@ -9,6 +9,8 @@ class User(AbstractUser):
 class Category(models.Model):
     name = models.CharField(max_length=100, blank=True, null=True)
     
+    def __str__(self):
+        return f'{self.name.capitalize()}'
 
 class Listing(models.Model):
     title = models.CharField(max_length=100)

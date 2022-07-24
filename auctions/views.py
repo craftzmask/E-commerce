@@ -29,11 +29,13 @@ def login_view(request):
             login(request, user)
             return HttpResponseRedirect(reverse("index"))
         else:
-            return render(request, "auctions/login.html", {
+            return render(request, "auctions/users/login.html", {
                 "message": "Invalid username and/or password."
             })
     else:
-        return render(request, "auctions/login.html")
+        return render(request, "auctions/users/login.html", {
+            'form': LoginForm()
+        })
 
 
 @login_required
@@ -51,7 +53,7 @@ def register(request):
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
         if password != confirmation:
-            return render(request, "auctions/register.html", {
+            return render(request, "auctions/users/register.html", {
                 "message": "Passwords must match."
             })
 
@@ -60,13 +62,15 @@ def register(request):
             user = User.objects.create_user(username, email, password)
             user.save()
         except IntegrityError:
-            return render(request, "auctions/register.html", {
+            return render(request, "auctions/users/register.html", {
                 "message": "Username already taken."
             })
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
     else:
-        return render(request, "auctions/register.html")
+        return render(request, "auctions/users/register.html", {
+            'form': RegisterForm()
+        })
 
 
 # Listings
@@ -82,24 +86,24 @@ def create_listing(request):
             messages.success(request, f'{listing.title} added to active listings')
             return redirect('index')
         else:
-            return render(request, 'auctions/create_listing.html', {
+            return render(request, 'auctions/listings/create.html', {
                 'form': form
             })
     
-    return render(request, 'auctions/create_listing.html', {
+    return render(request, 'auctions/listings/create.html', {
         'form': ListingForm()
     })
     
 
 def view_categories(request):
-    return render(request, 'auctions/view_categories.html', {
+    return render(request, 'auctions/categories/view.html', {
         'categories': Category.objects.all()
     })
     
 def view_listings_category(request, category_id):
     category = Category.objects.get(pk=category_id)
     listings = Listing.objects.filter(category=category)
-    return render(request, 'auctions/view_listings_category.html', {
+    return render(request, 'auctions/categories/view_listings.html', {
         'category': category,
         'listings': listings
     })
@@ -122,7 +126,7 @@ def view_listing(request, listing_id):
         if highest_bid.owner.username == request.user.username:
             messages.info(request, 'You are the winner of this auction')
         
-    return render(request, 'auctions/view_listing.html', {
+    return render(request, 'auctions/listings/view.html', {
         'listing': Listing.objects.get(pk=listing_id),
         'user_watchlist': user_watchlist,
         'user_listing': user_listing,
@@ -156,7 +160,7 @@ def add_watchlist(request, listing_id):
 def view_watchlist(request):
     watchlist = request.user.watchlist.all()
     listings = [w.listing for w in watchlist]
-    return render(request, 'auctions/view_watchlist.html', {
+    return render(request, 'auctions/watchlist/view.html', {
         'listings': listings
     })
 

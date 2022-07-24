@@ -1,0 +1,8 @@
+{% csrf_token %}
+{% for field in form %}
+    <div class="fieldWrapper form-group">
+        {{ field.errors }}
+        {{ field }}
+    </div>
+{% endfor %}
+<input type="submit" value={{ button_tag }}>

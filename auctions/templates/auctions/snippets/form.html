@@ -1,13 +1,15 @@
 {% for field in form %}
-    <div class="fieldWrapper form-group">
+    <div class="fieldWrapper form-group form-floating my-2">
         {{ field.errors }}
         {{ field }}
+        <label class="text-black-50" for="{{ field.auto_id }}">{{ field.label }}</label>
     </div>
 {% endfor %}
 
 {% for field in form_1 %}
-    <div class="fieldWrapper form-group">
+    <div class="fieldWrapper form-group form-floating my-2">
         {{ field.errors }}
         {{ field }}
+        <label class="text-black-50" for="{{ field.auto_id }}">{{ field.label }}</label>
     </div>
 {% endfor %}

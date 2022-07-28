@@ -1,6 +1,23 @@
 {% extends "auctions/layout.html" %}
 
+{% block nav %}
+    <nav class="navbar navbar-warning navbar-expand-lg bg-warning bg-opacity-25 p-0">
+        <div class="container-fluid py-1">
+            <ul class="navbar-nav text-center m-auto">
+                {% for category in categories %}
+                    <li class="nav-item active">
+                        <a class="mx-2 nav-link link-dark fw-semibold" href="{% url 'view_listings_category' category.id %}">
+                            {{ category.name.capitalize }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+{% endblock %}
+
 {% block body %}
-    <h2>Category: {{ category.name }}</h2>
-    {% include 'auctions/snippets/display-items.html' with listings=listings %}
+    <div class="container">
+        {% include 'auctions/snippets/display-items.html' with listings=listings %}
+    </div>
 {% endblock %}

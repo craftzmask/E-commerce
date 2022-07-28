@@ -11,16 +11,20 @@
     <body class="vh-100">
 
         <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg bg-white navbar-white border-bottom p-0">
+        <nav class="navbar navbar-white navbar-expand-lg bg-white border-bottom p-0">
             <div class="container-fluid p-4">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <a class="navbar-brand" href="{% url 'index' %}">Auctions</a>
+                <a class="navbar-brand" href="{% url 'index' %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-strava" viewBox="0 0 16 16">
+                        <path d="M6.731 0 2 9.125h2.788L6.73 5.497l1.93 3.628h2.766L6.731 0zm4.694 9.125-1.372 2.756L8.66 9.125H6.547L10.053 16l3.484-6.875h-2.112z"/>
+                    </svg>
+                </a>
                 
                 <form class="d-flex flex-fill ms-4 border border-dark w-75" role="search">
-                    <div class="input-group input-group-lg">
+                    <div class="input-group input-group">
                         <i class="bi bi-search input-group-text bg-white border-0"></i>
                         <input type="text" class="form-control border-0 shadow-none" placeholder="Search for items, categories. etc">
                     </div>
@@ -28,30 +32,31 @@
                   
                 <div class="collapse navbar-collapse" id="navbar">
                     <ul class="navbar-nav text-center ms-auto">
-                      <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{% url 'view_categories' %}">Browse</a>
-                      </li>
-                      {% if user.is_authenticated %}
-                            <li class="nav-item">
-                                <a class="nav-link active" href="{% url 'view_watchlist' %}">Watchlist</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" href="{% url 'create_listing' %}">Create Listing</a>
-                            </li>
-                            <li class="nav-item">
-                                <a type="button" class="nav-link link-dark btn btn-outline-dark rounded-0 mt-1 mx-1 py-1 px-3" href="{% url 'logout' %}">
+                        <li class="nav-item fs-5 me-1">
+                            <a class="nav-link active link-secondary" href="{% url 'view_watchlist' %}">
+                                <i class="bi bi-heart"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item fs-5 me-1">
+                            <a class="nav-link active link-secondary" href="{% url 'create_listing' %}">
+                                <i class="bi bi-plus-square"></i>
+                            </a>
+                        </li>
+                        {% if user.is_authenticated %}
+                            <li class="nav-item ms-1">
+                                <a type="button" class="nav-link link-dark btn btn-outline-dark rounded-0 mt-2 mx-1 py-1 px-3" href="{% url 'logout' %}">
                                     Log Out
                                     <i class="bi bi-box-arrow-right ms-1"></i>
                                 </a>
                             </li>
                         {% else %}
                             <li class="nav-item">
-                                <a type="button" class="nav-link link-dark btn btn-outline-dark rounded-0 mt-1 mx-1 py-1 px-3" href="{% url 'login' %}">
+                                <a type="button" class="nav-link link-dark btn btn-outline-dark rounded-0 mt-2 mx-1 py-1 px-3" href="{% url 'login' %}">
                                     Login
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a type="button" class="nav-link btn btn-dark text-white rounded-0 mt-1 mx-1 py-1 px-3" href="{% url 'register' %}">
+                                <a type="button" class="nav-link btn btn-dark text-white rounded-0 mt-2 mx-1 py-1 px-3" href="{% url 'register' %}">
                                     Register
                                 </a>
                             </li>
@@ -61,9 +66,11 @@
             </div>
         </nav>
 
+        {% block nav %}{% endblock  %}
+
         <!-- Main -->
         {% if messages %}
-            <ul class="messages list-unstyled">
+            <ul class="messages text-center list-unstyled">
                 {% for message in messages %}
                 <li{% if message.tags %} class="{{ message.tags }}"{% endif %} role="alert">
                     {{ message }}
@@ -71,10 +78,9 @@
                 {% endfor %}
             </ul>
         {% endif %}
-        
-        <div class="container-fluid text-center pt-5 d-flex justify-content-center">
-            {% block body %}
-            {% endblock %}
+
+        <div class="container text-center p-5 d-flex justify-content-center">
+            {% block body %}{% endblock %}
         </div>
 
         <!-- Footer -->

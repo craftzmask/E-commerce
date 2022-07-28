@@ -10,7 +10,8 @@ from .forms import *
 
 def index(request):
     return render(request, 'auctions/index.html', {
-        'listings': Listing.objects.all()
+        'listings': Listing.objects.all(),
+        'categories': Category.objects.all()
     })
 
 
@@ -127,19 +128,15 @@ def view_listing(request, listing_id, place_bid_form=PlaceBidForm(), comment_for
         'form': place_bid_form,
         'form_1': comment_form
     })
-       
 
-def view_categories(request):
-    return render(request, 'auctions/categories/view.html', {
-        'categories': Category.objects.all()
-    })
     
 def view_listings_category(request, category_id):
     category = Category.objects.get(pk=category_id)
     listings = Listing.objects.filter(category=category)
     return render(request, 'auctions/categories/view_listings.html', {
         'category': category,
-        'listings': listings
+        'listings': listings,
+        'categories': Category.objects.all()
     })
     
 
@@ -160,20 +157,27 @@ def add_watchlist(request, listing_id):
     return redirect('view_listing', listing_id=listing_id)
 
 
-@login_required
 def view_watchlist(request):
-    watchlist = request.user.watchlist.all()
-    listings = [w.listing for w in watchlist]
+    listings = []
+    if request.user.is_authenticated:
+        watchlist = request.user.watchlist.all()
+        listings = [w.listing for w in watchlist]
+        
     return render(request, 'auctions/watchlist/view.html', {
         'listings': listings
     })
-
 
 @login_required
 def remove_watchlist(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     request.user.watchlist.filter(listing=listing).delete()
-    
+    return redirect('view_watchlist')
+
+
+@login_required
+def remove_watchlist_from_listing(request, listing_id):
+    listing = Listing.objects.get(pk=listing_id)
+    request.user.watchlist.filter(listing=listing).delete()
     return redirect('view_listing', listing_id=listing_id)
 
 

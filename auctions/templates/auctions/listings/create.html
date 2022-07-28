@@ -1,16 +1,37 @@
 {% extends 'auctions/layout.html' %}
 
 {% block body %}
-    <h2>Create a Listing</h2>
-
-    <form action="{% url 'create_listing' %}" method="post" enctype="multipart/form-data">
+    <form action="{% url 'create_listing' %}" method="post" enctype="multipart/form-data" class="border rounded p-3 mt-5" style="width: 400px;">
         {% csrf_token %}
-        {% for field in form %}
-            <div class="fieldWrapper form-group">
-                {{ field.errors }}
-                {{ field }}
-            </div>
-        {% endfor %}
-        <input type="submit" value="Start bidding">
+        <h3 class="mb-3">Create a Listing</h3>
+        <div class="fieldWrapper form-group form-floating my-2">
+            {{ form.title.errors }}
+            {{ form.title }}
+            <label class="text-black-50" for="{{ form.title.auto_id }}">{{ form.title.label }}</label>
+        </div>
+
+        <div class="fieldWrapper form-group form-floating my-2">
+            {{ form.description.errors }}
+            {{ form.description }}
+            <label class="text-black-50" for="{{ form.description.auto_id }}">{{ form.description.label }}</label>
+        </div>
+
+        <div class="fieldWrapper form-group form-floating my-2">
+            {{ form.starting_bid.errors }}
+            {{ form.starting_bid }}
+            <label class="text-black-50" for="{{ form.starting_bid.auto_id }}">{{ form.starting_bid.label }}</label>
+        </div>
+
+        <div class="fieldWrapper form-group my-2">
+            {{ form.category.errors }}
+            {{ form.category }}
+        </div>
+
+        <div class="fieldWrapper form-group my-2">
+            {{ form.photo.errors }}
+            {{ form.photo }}
+        </div>
+
+        <input type="submit" class="w-100 btn btn-dark mt-2 py-3" value="Start bidding">
     </form>
 {% endblock %}

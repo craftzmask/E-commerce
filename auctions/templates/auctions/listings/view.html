@@ -1,13 +1,13 @@
 {% extends 'auctions/layout.html' %}
 
 {% block body %}
-    <div style="width: 35%;">
+    <div style="width: 800px;">
         <div class="row mb-4">
             <div class="d-flex">
                 <span class="h3 text-start me-auto">{{ listing.title }}</span>
 
                 {% if user_watchlist_exits %}
-                    <a href="{% url 'remove_watchlist' listing.id %}">
+                    <a href="{% url 'remove_watchlist_from_listing' listing.id %}">
                         <i class="ms-2 h4 text-dark bi bi-heart-fill"></i>
                     </a>
                 {% else %}
@@ -22,11 +22,11 @@
         <div class="row mb-4 pb-4 border-bottom">
             <div class="col-6 text-center">
                 {% if listing.photo %}
-                    <img class="img-fluid" src="{{ listing.photo.url }}" width="200" height="100">
+                    <img class="img-fluid shadow" src="{{ listing.photo.url }}" width="200" height="100">
                 {% endif %}
             </div>
     
-            <div class="col-6 text-center border rounded pt-5">
+            <div class="col-6 text-center border rounded pt-5 shadow">
                 {% if listing.is_active %}
                     <form action="{% url 'place_bid' listing.id %}" method="post">
                         {% csrf_token %}
@@ -41,13 +41,13 @@
                         {% endfor %}
 
                         <div class="row p-3">
-                            <input type="submit" class="col-6 btn btn-outline-dark rounded-0 py-3" value="Place Bid">
+                            <input type="submit" class="fs-5 btn btn-outline-dark rounded-0 py-2" value="Place Bid">
                             {% if user_listing_contains %}
-                                <a class="col-6 btn btn-danger rounded-0 py-3" href="{% url 'close_listing' listing.id %}">
+                                <a class="fs-5 btn btn-danger rounded-0 py-2" href="{% url 'close_listing' listing.id %}">
                                     Sell for ${{ listing.starting_bid }}
                                 </a>
                             {% else %}
-                                <a class="col-6 btn btn-success rounded-0 py-3">
+                                <a class="fs-5 btn btn-success rounded-0 py-2">
                                     Buy for ${{ listing.starting_bid }}
                                 </a>
                             {% endif %}

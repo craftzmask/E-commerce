@@ -38,11 +38,31 @@ class RegisterForm(forms.Form):
 
 class ListingForm(ModelForm):
     template_name = 'auctions/snippets/form.html'
-    category = forms.ModelChoiceField(queryset=Category.objects.all())
+    category = forms.ModelChoiceField(queryset=Category.objects.all(), initial='', widget=forms.Select(attrs={
+        'class': style + " form-select text-start"
+    }))
     class Meta:
         model = Listing
         fields = ['title', 'description', 'starting_bid', 'photo', 'category']
- 
+        widgets={
+            'title': forms.TextInput(attrs={
+                'class': style,
+                'placeholder': 'Title',
+            }),
+            'description': forms.Textarea(attrs={
+                'class': style,
+                'style': 'height: 130px',
+                'placeholder': 'Description',
+            }),
+            'starting_bid': forms.NumberInput(attrs={
+                'class': 'form-control rounded-0',
+                'placeholder': 'Enter Bid',
+            }),
+            'photo': forms.ClearableFileInput(attrs={
+                'class': 'form-control rounded-0 shadow-none',
+                'type': 'file'
+            })
+        }
    
 class PlaceBidForm(ModelForm):
     template_name = 'auctions/snippets/form.html'

@@ -1,28 +1,42 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Watchlist</h2>
-
-    {% for listing in listings %}
-        <a href="{% url 'view_listing' listing.id %}">
-            <div class="card mb-3" style="max-width: 540px;">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        {% if listing.photo %}
-                            <img src="{{ listing.photo.url }}" class="img-fluid rounded-start" alt="listing.title">
-                        {% endif %}
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ listing.title }}</h5>
-                            <p class="card-text">Price: ${{ listing.starting_bid }}</p>
-                            <p class="card-text"><small class="text-muted">Created {{ listing.created_at }}</small></p>
-                        </div>
-                    </div>
-                </div>
+    <div class="row justify-content-start w-100">
+        <h3>MY WATCHLIST</h3>
+        {% if user.is_authenticated %}
+            <table class="table mt-5">
+                {% if listings %}
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Bid</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                {% endif %}
+                <tbody>
+                    {% for listing in listings %}
+                        <tr>
+                            <td><img src={{ listing.photo.url }} width="100"></td>
+                            <td class="align-middle">{{ listing.title }}</td>
+                            <td class="fw-semibold align-middle">${{ listing.starting_bid }}</td>
+                            <td class="align-middle">
+                                <a href="{% url 'remove_watchlist' listing.id %}" class="text-dark"><i class="fs-5 me-4 bi bi-trash"></i></a>
+                                <a href="" class="text-dark"><i class="fs-5 bi bi-cart"></i></a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <small class="text-black-50">It is empty here.</small>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div>
+                <small class="text-black-50">It is empty here.</small>
+                <p class="fw-bold fs-5 mt-3 ">Already have items saved?</p>
+                <a href="{% url 'login' %}" class="btn btn-dark mt-2 py-2 w-25">Login</a>
             </div>
-        </a>
-    {% empty %}
-        <p>No Watchlist</p>
-    {% endfor %}
+        {% endif %}
+    </div>
 {% endblock %}
